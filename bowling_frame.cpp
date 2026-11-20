@@ -8,10 +8,14 @@ Bowling_Frame::Bowling_Frame(int fnum)
 {
 	score1_ = 0;
 	score2_ = 0;
+	score_3 = 0;
 	strike_ = false;
 	spare_ = false;
 	frame_num_ = fnum;
 	frame_score_ = 0;
+	bool roll_one_ = false;
+	bool roll_two_ = false;
+	bool roll_three_ = false;
 
 	next_frame_ = NULL;
 	prev_frame_ = NULL;
@@ -35,6 +39,9 @@ void Bowling_Frame::score1( int score )	{ score1_ = score; }
 
 int Bowling_Frame::score2()				{ return score2_; }
 void Bowling_Frame::score2( int score )	{ score2_ = score; }
+
+int Bowling_Frame::score3()				{ return score3_; }
+void Bowling_Frame::score3( int score ) {score3_ = score; }
 
 bool Bowling_Frame::strike() 			{ return strike_; }
 void Bowling_Frame::strike(bool value )	{ strike_ = value; }
@@ -73,7 +80,27 @@ void Bowling_Frame::update_scores()
 	}
 	else if (next_frame_) 	next_frame_->update_scores();
 
-	frame_score_ = score1_ + score2_;
+	if (frame_num_ == 10) {
+		frame_score_ = score1_ + score2_ + score3_;
+	}
+	else if (strike_) {
+		if (next_frame_) {
+			if (next_frame_-> strike() && next_frame_-> frame_num() < 10 && next_frame_->next_frame()) {
+				frame_score_ = 10 + next_frame_->score1() + next_frame_->next_frame_->score1();
+			}
+			else {
+				frame_score_ = 10 + next_frame_->score1() + next_frame_->score2();
+			}
+		}
+	}
+	else if (spare_) {
+		if (next_frame_) {
+			frame_score_ = 10 + next_frame->score1();
+		}
+	}
+	else {
+		frame_score_ = score1() + score2();
+	}
 }
 
 
