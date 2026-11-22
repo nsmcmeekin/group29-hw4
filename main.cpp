@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 		Bowling_Frame * traverse = players[i];
 
 		while (traverse) {
-			out << "Frame " << traverse->frame_num() << ":" << endl
+			cout << "Frame " << traverse->frame_num() << ":" << endl
 			 	 << " Score 1: " << traverse->score1() << endl
 			 	 << " Score 2: " << traverse->score2() << endl;
 
