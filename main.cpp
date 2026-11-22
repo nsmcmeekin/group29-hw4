@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 
 	if (argc != 2) {
 		cout << "Usage: " << argv[0] << " <num_players>" << endl;
-		return 1;
+		return 0;
 	}
 
 	int num_players = atoi(argv[1]);
