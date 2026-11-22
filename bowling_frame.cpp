@@ -8,14 +8,14 @@ Bowling_Frame::Bowling_Frame(int fnum)
 {
 	score1_ = 0;
 	score2_ = 0;
-	score_3 = 0;
+	score3_ = 0;
 	strike_ = false;
 	spare_ = false;
 	frame_num_ = fnum;
 	frame_score_ = 0;
-	bool roll_one_ = false;
-	bool roll_two_ = false;
-	bool roll_three_ = false;
+	roll_one_ = false;
+	roll_two_ = false;
+	roll_three_ = false;
 
 	next_frame_ = NULL;
 	prev_frame_ = NULL;
