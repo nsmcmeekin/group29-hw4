@@ -24,8 +24,7 @@ Bowling_Frame::Bowling_Frame(int fnum)
 
 Bowling_Frame::~Bowling_Frame()
 {
-	free(next_frame_);
-	free(prev_frame_);
+	
 }
 
 Bowling_Frame* Bowling_Frame::next_frame() { return next_frame_; }
@@ -70,37 +69,58 @@ void Bowling_Frame::update_scores()
 
 		if(score1_ == 10) strike_ = true; 
 	}
-	else if ( !strike_ && !roll_two_ ) 	
+	else if (!roll_two_ && (!strike_ || frame_num_ == 10)) 	
 	{
-		std::uniform_int_distribution<std::mt19937::result_type> distX(0,10 - score1_);
+		int max_pins = (frame_num_ == 10 && strike_) ? 10 : (10 - score1_);
+		std::uniform_int_distribution<std::mt19937::result_type> distX(0, max_pins);
 		score2_ = distX(rng); 
 		roll_two_ = true;
 
-		if ((score1_ + score2_) == 10) spare_ = true;
+		if (!strike_ && (score1_ + score2_) == 10) spare_ = true;
 	}
-	else if (next_frame_) 	next_frame_->update_scores();
+	else if (frame_num_ == 10 && (strike_ || spare_) && !roll_three_)
+	{
+		int max_pins = 10;
+		if (strike_ && score2_ > 0 && score2_ < 10)
+		{
+			max_pins = 10 - score2_;
+		}
+		std::uniform_int_distribution<std::mt19937::result_type> dist3(0, max_pins);
+		score3_ = dist3(rng);
+		roll_three_ = true;
+	}
 
-	if (frame_num_ == 10) {
+	else if (next_frame_) 
+	{
+		next_frame_->update_scores();
+	}
+	if (frame_num_ == 10)
+	{
 		frame_score_ = score1_ + score2_ + score3_;
 	}
-	else if (strike_) {
-		if (next_frame_) {
-			if (next_frame_-> strike() && next_frame_-> frame_num() < 10 && next_frame_->next_frame()) {
-				frame_score_ = 10 + next_frame_->score1() + next_frame_->next_frame_->score1();
+	else if (strike_)
+	{
+		if (next_frame_)
+		{
+			if (next_frame_->strike() && next_frame_->frame_num() < 10 && next_frame_->next_frame())
+			{
+				frame_score_ = 10 + next_frame_->score1() + next_frame_->next_frame()->score1();
 			}
-			else {
+			else
+			{
 				frame_score_ = 10 + next_frame_->score1() + next_frame_->score2();
 			}
 		}
 	}
-	else if (spare_) {
-		if (next_frame_) {
-			frame_score_ = 10 + next_frame->score1();
+	else if (spare_)
+	{
+		if (next_frame_)
+		{
+			frame_score_ = 10 + next_frame_->score1();
 		}
 	}
-	else {
-		frame_score_ = score1() + score2();
+	else
+	{
+		frame_score_ = score1_ + score2_;
 	}
 }
-
-
